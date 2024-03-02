@@ -24,6 +24,10 @@ const buttonOpenAddCard = document.querySelector(".profile__add-button");
 const formCard = document.forms["new-place"];
 const newNameCard = formCard.elements["place-name"];
 const newUrlCard = formCard.elements["link"];
+// Картинка
+const popupImage = document.querySelector(".popup__image");
+const popupCaption = document.querySelector(".popup__caption");
+const popupTypeImage = document.querySelector(".popup_type_image");
 // Обработчики событий
 buttonOpenEditProfile.addEventListener("click", () => {
   openPopup(popupEditProfile);
@@ -75,15 +79,8 @@ function handleAddCardSubmit(e) {
 formCard.addEventListener("submit", handleAddCardSubmit);
 
 function handleImageClick(e) {
-  document.querySelector(".popup__image").setAttribute("src", e.link);
-  document.querySelector(".popup__image").setAttribute("alt", e.name);
-  document.querySelector(".popup__caption").textContent = e.name;
-
-  const popupImage = document.querySelector(".popup_type_image");
-  const image = document.querySelectorAll(".card__image");
-  image.forEach((card) => {
-    card.addEventListener("click", () => {
-      openPopup(popupImage);
-    });
-  });
+  popupImage.setAttribute("src", e.link);
+  popupImage.setAttribute("alt", e.name);
+  popupCaption.textContent = e.name;
+  openPopup(popupTypeImage);
 }
