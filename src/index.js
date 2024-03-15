@@ -5,6 +5,8 @@ import { closePopup } from "./components/modal.js";
 import { createCard } from "./components/card.js";
 import { deleteCard } from "./components/card.js";
 import { likeCard } from "./components/card.js";
+import { clearValidation } from "./components/validation.js";
+import { enableValidation } from "./components/validation.js";
 
 // Контейнер с картинками
 const placesList = document.querySelector(".places__list");
@@ -28,13 +30,17 @@ const newUrlCard = formCard.elements["link"];
 const popupImage = document.querySelector(".popup__image");
 const popupCaption = document.querySelector(".popup__caption");
 const popupTypeImage = document.querySelector(".popup_type_image");
+
 // Обработчики событий
 buttonOpenEditProfile.addEventListener("click", () => {
   openPopup(popupEditProfile);
   nameInput.value = profileTitle.textContent;
   descriptionInput.value = profileDescription.textContent;
+  clearValidation(profileForm);
 });
+
 buttonOpenAddCard.addEventListener("click", () => {
+  clearValidation(formCard);
   openPopup(popupAddCard);
 });
 popups.forEach((popup) => {
@@ -61,6 +67,7 @@ function handleProfileSubmit(e) {
   closePopup(popupEditProfile);
   profileForm.reset();
 }
+
 profileForm.addEventListener("submit", handleProfileSubmit);
 
 function handleAddCardSubmit(e) {
@@ -76,6 +83,7 @@ function handleAddCardSubmit(e) {
   closePopup(popupAddCard);
   formCard.reset();
 }
+
 formCard.addEventListener("submit", handleAddCardSubmit);
 
 function handleImageClick(e) {
@@ -84,3 +92,4 @@ function handleImageClick(e) {
   popupCaption.textContent = e.name;
   openPopup(popupTypeImage);
 }
+enableValidation();
