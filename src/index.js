@@ -144,24 +144,17 @@ Promise.all([getProfileInfo(), getCardList()]).then(
     profileDescription.textContent = inishialProfile.about;
 
     cardList.forEach((card) => {
-      
       const cardData = {
         link: card.link,
         name: card.name,
-
         _id: card._id,
-
         userData: inishialProfile,
         usersData: card.owner,
-
         myId: inishialProfile._id,
         usersId: card.owner._id,
-
         likes: card.likes,
         length: card.likes.length,
       };
-
-      
 
       placesList.append(
         createCard(cardData, { deleteCard, likeCard, handleImageClick })

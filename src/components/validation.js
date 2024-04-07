@@ -33,7 +33,6 @@ const checkInputValidity = (formElement, inputElement) => {
   } else {
     inputElement.setCustomValidity("");
   }
-
   if (!inputElement.validity.valid) {
     showInputError(formElement, inputElement, inputElement.validationMessage);
   } else {
@@ -50,7 +49,6 @@ const toggleButtonState = (inputList, buttonElement) => {
     buttonElement.classList.remove(validationConfig.inactiveButtonClass);
   }
 };
-
 //очистка ошибок валидации
 export const clearValidation = (formElement) => {
   const inputList = Array.from(
@@ -62,9 +60,8 @@ export const clearValidation = (formElement) => {
   inputList.forEach((inputElement) => {
     hideInputError(formElement, inputElement);
   });
-  toggleButtonState(inputList, submitButton)
+  toggleButtonState(inputList, submitButton);
 };
-
 //  добавление обработчиков сразу всем полям формы.
 const setEventListeners = (formElement) => {
   const inputList = Array.from(
@@ -82,7 +79,6 @@ const setEventListeners = (formElement) => {
   });
 };
 // Добавление обработчиков всем формам
-
 export const enableValidation = () => {
   const formList = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
