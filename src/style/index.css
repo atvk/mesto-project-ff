@@ -12,6 +12,7 @@
 @import url('../blocks/popup/_is-opened/popup_is-opened.css');
 
 
+
 .popup__input_type_error {
   border-bottom-color: red;
 }
@@ -36,8 +37,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background:#fff;
-  border-radius: 2px ;
+  background: #fff;
+  border-radius: 2px;
   border: 2px solid #C4C4C4;
   transition: visibility 0s, background 0.3s;
   margin-top: 48px;

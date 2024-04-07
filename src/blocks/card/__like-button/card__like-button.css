@@ -1,8 +1,28 @@
+.like-conteiner {
+  display: grid;
+  width: 22px;
+  height: 35px;
+}
+
+.count-like {
+  display: grid;
+  justify-content: center;
+  color: rgb(0, 0, 0);
+  font-family: Inter;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0%;
+  text-align: center;
+}
+
 .card__like-button {
-  width: 21px;
-  height: 18px;
+  display: grid;
+  justify-content: center;
+  width: 22px;
+  height: 19px;
   background: transparent url('../../../images/like-inactive.svg') no-repeat;
-  
+
   background-size: 21px 18px;
   border: none;
   cursor: pointer;
