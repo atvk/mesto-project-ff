@@ -1,4 +1,4 @@
-const validationConfig = {
+export const validationConfig = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
   submitButtonSelector: ".popup__button",
@@ -50,7 +50,7 @@ const toggleButtonState = (inputList, buttonElement) => {
   }
 };
 //очистка ошибок валидации
-export const clearValidation = (formElement) => {
+export const clearValidation = (validationConfig, formElement) => {
   const inputList = Array.from(
     formElement.querySelectorAll(validationConfig.inputSelector)
   );
@@ -79,7 +79,7 @@ const setEventListeners = (formElement) => {
   });
 };
 // Добавление обработчиков всем формам
-export const enableValidation = () => {
+export const enableValidation = (validationConfig) => {
   const formList = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
   );

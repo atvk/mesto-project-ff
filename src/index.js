@@ -1,18 +1,20 @@
 import "../src/style/index.css";
 import { openPopup } from "./components/modal.js";
 import { closePopup } from "./components/modal.js";
+import { setCloseByClickListeners } from "./components/modal.js";
 import { createCard } from "./components/card.js";
 import { deleteCard } from "./components/card.js";
 import { likeCard } from "./components/card.js";
 import { clearValidation } from "./components/validation.js";
 import { enableValidation } from "./components/validation.js";
+import { validationConfig } from "./components/validation.js";
 import { getProfileInfo } from "./components/api.js";
 import { updateProfileInfo } from "./components/api.js";
 import { updateProfileAvatar } from "./components/api.js";
 import { getCardList } from "./components/api.js";
 import { postCard } from "./components/api.js";
 
-const placesList = document.querySelector(".places__list");
+const cardsContainer = document.querySelector(".places__list");
 const popups = document.querySelectorAll(".popup");
 
 const profileTitle = document.querySelector(".profile__title");
@@ -43,33 +45,31 @@ const popupImage = document.querySelector(".popup__image");
 const popupCaption = document.querySelector(".popup__caption");
 const popupTypeImage = document.querySelector(".popup_type_image");
 
-avatarImage.addEventListener("click", () => {
-  openPopup(popupAvatarProfile);
-  clearValidation(avatarForm);
-});
+Promise.all([getProfileInfo(), getCardList()])
+  .then(([inishialProfile, cardList]) => {
+    profileAvatar.style.backgroundImage = `url('${inishialProfile.avatar}')`;
+    profileTitle.textContent = inishialProfile.name;
+    profileDescription.textContent = inishialProfile.about;
 
-buttonOpenEditProfile.addEventListener("click", () => {
-  openPopup(popupEditProfile);
-  nameInput.value = profileTitle.textContent;
-  descriptionInput.value = profileDescription.textContent;
-  clearValidation(profileForm);
-});
+    const userId = inishialProfile._id;
 
-buttonOpenAddCard.addEventListener("click", () => {
-  clearValidation(formCard);
-  openPopup(popupAddCard);
-});
+    cardList.forEach((card) => {
+      const cardData = {
+        link: card.link,
+        name: card.name,
+        _id: card._id,
+        ownerId: card.owner._id,
+        likes: card.likes,
+      };
 
-popups.forEach((popup) => {
-  popup.addEventListener("mousedown", (e) => {
-    if (e.target.classList.contains("popup__close")) {
-      closePopup(popup);
-    }
-    if (e.target.classList.contains("popup_is-opened")) {
-      closePopup(popup);
-    }
+      cardsContainer.append(
+        createCard(cardData, userId, { deleteCard, likeCard, openImagePopup })
+      );
+    });
+  })
+  .catch((err) => {
+    console.log(err);
   });
-});
 
 function handleAvatarSubmit(e) {
   e.preventDefault();
@@ -78,32 +78,38 @@ function handleAvatarSubmit(e) {
   updateProfileAvatar(newAvatar)
     .then((newAvatar) => {
       profileAvatar.style.backgroundImage = `url('${newAvatar.avatar}')`;
+      closePopup(popupAvatarProfile);
+      avatarForm.reset();
+      clearValidation(validationConfig, avatarForm);
+    })
+    .catch((err) => {
+      console.log(err);
     })
     .finally(() => {
       avatarSubmitButton.textContent = "Сохранить";
     });
-
-  closePopup(popupAvatarProfile);
-  avatarForm.reset();
 }
-avatarForm.addEventListener("submit", handleAvatarSubmit);
 
 function handleProfileSubmit(e) {
   e.preventDefault();
   profileSubmitButton.textContent = "Сохранить...";
-  profileTitle.textContent = nameInput.value;
-  profileDescription.textContent = descriptionInput.value;
   const newProfileInfo = {
     name: nameInput.value,
     about: descriptionInput.value,
   };
-  updateProfileInfo(newProfileInfo).finally(() => {
-    profileSubmitButton.textContent = "Сохранить";
-  });
-  closePopup(popupEditProfile);
-  profileForm.reset();
+  updateProfileInfo(newProfileInfo)
+    .then(() => {
+      profileTitle.textContent = nameInput.value;
+      profileDescription.textContent = descriptionInput.value;
+      closePopup(popupEditProfile);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      profileSubmitButton.textContent = "Сохранить";
+    });
 }
-profileForm.addEventListener("submit", handleProfileSubmit);
 
 function handleAddCardSubmit(e) {
   e.preventDefault();
@@ -112,53 +118,54 @@ function handleAddCardSubmit(e) {
     link: newUrlCard.value,
     name: newNameCard.value,
   };
-
   postCard(cardNew)
-    .then((cardNew) => {
-      placesList.prepend(
-        createCard(cardNew, { deleteCard, likeCard, handleImageClick })
+    .then((cardNew, userId) => {
+      cardsContainer.prepend(
+        createCard(cardNew, userId, { deleteCard, likeCard, openImagePopup })
       );
+      closePopup(popupAddCard);
+      formCard.reset();
+      clearValidation(validationConfig, formCard);
+    })
+    .catch((err) => {
+      console.log(err);
     })
     .finally(() => {
       cardSubmitButton.textContent = "Сохранить";
     });
 
-  closePopup(popupAddCard);
-  formCard.reset();
 }
-formCard.addEventListener("submit", handleAddCardSubmit);
 
-function handleImageClick(e) {
-  popupImage.setAttribute("src", e.link);
-  popupImage.setAttribute("alt", e.name);
-  popupCaption.textContent = e.name;
+function openImagePopup(cardData) {
+  popupImage.src = cardData.link;
+  popupImage.alt = cardData.name;
+  popupCaption.textContent = cardData.name;
   openPopup(popupTypeImage);
 }
 
-enableValidation();
+setCloseByClickListeners(popups);
 
-Promise.all([getProfileInfo(), getCardList()]).then(
-  ([inishialProfile, cardList]) => {
-    profileAvatar.style.backgroundImage = `url('${inishialProfile.avatar}')`;
-    profileTitle.textContent = inishialProfile.name;
-    profileDescription.textContent = inishialProfile.about;
+enableValidation(validationConfig);
 
-    cardList.forEach((card) => {
-      const cardData = {
-        link: card.link,
-        name: card.name,
-        _id: card._id,
-        userData: inishialProfile,
-        usersData: card.owner,
-        myId: inishialProfile._id,
-        usersId: card.owner._id,
-        likes: card.likes,
-        length: card.likes.length,
-      };
+avatarImage.addEventListener("click", () => {
+  openPopup(popupAvatarProfile);
+  avatarForm.reset();
+  clearValidation(validationConfig, avatarForm);
+});
 
-      placesList.append(
-        createCard(cardData, { deleteCard, likeCard, handleImageClick })
-      );
-    });
-  }
-);
+buttonOpenEditProfile.addEventListener("click", () => {
+  openPopup(popupEditProfile);
+  nameInput.value = profileTitle.textContent;
+  descriptionInput.value = profileDescription.textContent;
+  clearValidation(validationConfig, profileForm);
+});
+
+buttonOpenAddCard.addEventListener("click", () => {
+  openPopup(popupAddCard);
+});
+
+avatarForm.addEventListener("submit", handleAvatarSubmit);
+
+profileForm.addEventListener("submit", handleProfileSubmit);
+
+formCard.addEventListener("submit", handleAddCardSubmit);
