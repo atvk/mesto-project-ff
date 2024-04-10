@@ -45,20 +45,22 @@ const popupImage = document.querySelector(".popup__image");
 const popupCaption = document.querySelector(".popup__caption");
 const popupTypeImage = document.querySelector(".popup_type_image");
 
+let userId = null;
+
 Promise.all([getProfileInfo(), getCardList()])
   .then(([inishialProfile, cardList]) => {
     profileAvatar.style.backgroundImage = `url('${inishialProfile.avatar}')`;
     profileTitle.textContent = inishialProfile.name;
     profileDescription.textContent = inishialProfile.about;
 
-    const userId = inishialProfile._id;
+    userId = inishialProfile._id;
 
     cardList.forEach((card) => {
       const cardData = {
         link: card.link,
         name: card.name,
         _id: card._id,
-        ownerId: card.owner._id,
+        owner: card.owner,
         likes: card.likes,
       };
 
@@ -79,7 +81,6 @@ function handleAvatarSubmit(e) {
     .then((newAvatar) => {
       profileAvatar.style.backgroundImage = `url('${newAvatar.avatar}')`;
       closePopup(popupAvatarProfile);
-      avatarForm.reset();
       clearValidation(validationConfig, avatarForm);
     })
     .catch((err) => {
@@ -114,12 +115,14 @@ function handleProfileSubmit(e) {
 function handleAddCardSubmit(e) {
   e.preventDefault();
   cardSubmitButton.textContent = "Сохранить...";
+
   const cardNew = {
     link: newUrlCard.value,
     name: newNameCard.value,
   };
+
   postCard(cardNew)
-    .then((cardNew, userId) => {
+    .then((cardNew) => {
       cardsContainer.prepend(
         createCard(cardNew, userId, { deleteCard, likeCard, openImagePopup })
       );
@@ -133,7 +136,6 @@ function handleAddCardSubmit(e) {
     .finally(() => {
       cardSubmitButton.textContent = "Сохранить";
     });
-
 }
 
 function openImagePopup(cardData) {

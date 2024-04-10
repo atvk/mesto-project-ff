@@ -63,7 +63,8 @@ export const clearValidation = (validationConfig, formElement) => {
   toggleButtonState(inputList, submitButton);
 };
 //  добавление обработчиков сразу всем полям формы.
-const setEventListeners = (formElement) => {
+
+const setEventListeners = (validationConfig, formElement) => {
   const inputList = Array.from(
     formElement.querySelectorAll(validationConfig.inputSelector)
   );
@@ -71,6 +72,7 @@ const setEventListeners = (formElement) => {
     validationConfig.submitButtonSelector
   );
   toggleButtonState(inputList, buttonElement);
+  
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
       checkInputValidity(formElement, inputElement);
@@ -79,11 +81,12 @@ const setEventListeners = (formElement) => {
   });
 };
 // Добавление обработчиков всем формам
+
 export const enableValidation = (validationConfig) => {
   const formList = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
   );
   formList.forEach((formElement) => {
-    setEventListeners(formElement);
+    setEventListeners(validationConfig, formElement);
   });
 };

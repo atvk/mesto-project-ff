@@ -67,7 +67,7 @@ export function createCard(
     likeCard(cardData, likeСounter, likeButton);
   });
 
-  if (userId !== cardData.ownerId) {
+  if (userId !== cardData.owner._id) {
     cardDeleteButton.remove();
   } else {
     cardDeleteButton.addEventListener("click", () => {
