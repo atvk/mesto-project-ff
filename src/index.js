@@ -52,9 +52,7 @@ Promise.all([getProfileInfo(), getCardList()])
     profileAvatar.style.backgroundImage = `url('${inishialProfile.avatar}')`;
     profileTitle.textContent = inishialProfile.name;
     profileDescription.textContent = inishialProfile.about;
-
     userId = inishialProfile._id;
-
     cardList.forEach((card) => {
       const cardData = {
         link: card.link,
