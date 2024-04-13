@@ -16,35 +16,29 @@ import { postCard } from "./components/api.js";
 
 const cardsContainer = document.querySelector(".places__list");
 const popups = document.querySelectorAll(".popup");
-
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileAvatar = document.querySelector(".profile__image");
-
 const popupEditProfile = document.querySelector(".popup_type_edit");
 const buttonOpenEditProfile = document.querySelector(".profile__edit-button");
 const profileForm = document.forms["edit-profile"];
 const nameInput = profileForm.name;
 const descriptionInput = profileForm.description;
 const profileSubmitButton = profileForm.button;
-
 const avatarImage = document.querySelector(".profile__image");
 const popupAvatarProfile = document.querySelector(".popup_type_update-avatar");
 const avatarForm = document.forms["avatar"];
 const urlInput = avatarForm.link;
 const avatarSubmitButton = avatarForm.button;
-
 const popupAddCard = document.querySelector(".popup_type_new-card");
 const buttonOpenAddCard = document.querySelector(".profile__add-button");
 const formCard = document.forms["new-place"];
 const newNameCard = formCard.elements["place-name"];
 const newUrlCard = formCard.elements["link"];
 const cardSubmitButton = formCard.button;
-
 const popupImage = document.querySelector(".popup__image");
 const popupCaption = document.querySelector(".popup__caption");
 const popupTypeImage = document.querySelector(".popup_type_image");
-
 let userId = null;
 
 Promise.all([getProfileInfo(), getCardList()])
